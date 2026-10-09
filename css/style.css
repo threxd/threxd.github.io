@@ -1,0 +1,624 @@
+/* ============================================================
+   Nik Chavda — Portfolio
+   Design system: nostalgic / tactile / bauhaus
+   Palette:
+     Dark Blue #011b36 (backgrounds — never black)
+     Turquoise #08beaf (accent, light touch)
+     Orange    #ff6f00 (accent, light touch)
+     Red       #5e0404 (rare, supporting warmth)
+     Beige     #efe5d0 (all text)
+   ============================================================ */
+
+:root {
+  --dark-blue: #011b36;
+  --turquoise: #08beaf;
+  --orange: #ff6f00;
+  --red: #5e0404;
+  --beige: #efe5d0;
+  --beige-dim: rgba(239, 229, 208, 0.55);
+  --beige-faint: rgba(239, 229, 208, 0.28);
+  --font: "Aleo", Georgia, serif;
+  --max-width: 1200px;
+  --pad-x: clamp(1.25rem, 4vw, 4rem);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background-color: #010f20;
+  color: var(--beige);
+  font-family: var(--font);
+  font-size: 1.0625rem;
+  line-height: 1.65;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+::selection { background: var(--turquoise); color: var(--dark-blue); }
+
+/* ------------------------------------------------------------
+   Light leaks — always bleeding in from the frame edge,
+   like a film exposure. Variants per page.
+   ------------------------------------------------------------ */
+.light-leaks {
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+  /* Deep dark blue base, deeper still towards the frame edges —
+     contrast and depth like a film vignette */
+  background:
+    radial-gradient(ellipse 120% 110% at 50% 40%, #011527 45%, #010e1e 80%, #000812 100%);
+}
+
+.light-leaks::before,
+.light-leaks::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  mix-blend-mode: screen;
+  /* Oversaturated and pushed hot — blown out like an old print */
+  filter: saturate(1.45) contrast(1.12) brightness(1.05);
+  animation: leak-drift 26s ease-in-out infinite alternate;
+  /* Low-frequency noise mask: breaks the gradients into patchy,
+     erratic blooms so they read as real light leaks, not gradients */
+  /* Blotch mask multiplied with a fine noise so the leaks fall off
+     grainy — like a badly exposed print — instead of smoothly */
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='900' height='900'%3E%3Cfilter id='m'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.0045' numOctaves='4' seed='7' stitchTiles='stitch'/%3E%3CfeComponentTransfer result='blotch'%3E%3CfeFuncA type='linear' slope='0.75' intercept='0.45'/%3E%3C/feComponentTransfer%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.5' numOctaves='2' seed='40' stitchTiles='stitch'/%3E%3CfeComponentTransfer result='fine'%3E%3CfeFuncA type='linear' slope='0.5' intercept='0.62'/%3E%3C/feComponentTransfer%3E%3CfeComposite in='blotch' in2='fine' operator='arithmetic' k1='1' k2='0' k3='0' k4='0'/%3E%3C/filter%3E%3Crect width='900' height='900' filter='url(%23m)'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='900' height='900'%3E%3Cfilter id='m'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.0045' numOctaves='4' seed='7' stitchTiles='stitch'/%3E%3CfeComponentTransfer result='blotch'%3E%3CfeFuncA type='linear' slope='0.75' intercept='0.45'/%3E%3C/feComponentTransfer%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.5' numOctaves='2' seed='40' stitchTiles='stitch'/%3E%3CfeComponentTransfer result='fine'%3E%3CfeFuncA type='linear' slope='0.5' intercept='0.62'/%3E%3C/feComponentTransfer%3E%3CfeComposite in='blotch' in2='fine' operator='arithmetic' k1='1' k2='0' k3='0' k4='0'/%3E%3C/filter%3E%3Crect width='900' height='900' filter='url(%23m)'/%3E%3C/svg%3E");
+  -webkit-mask-size: 140% 140%;
+  mask-size: 140% 140%;
+}
+
+/* Variant A — homepage: teal top-left (hot white core), warm burn
+   bottom-right (red rim beyond the orange) */
+.leaks-a::before {
+  background:
+    radial-gradient(ellipse 50vw 44vh at -4% -8%, rgba(255, 255, 255, 1) 4%, rgba(190, 250, 235, 0.85) 20%, rgba(8, 190, 175, 0.65) 42%, rgba(8, 150, 160, 0.32) 56%, rgba(10, 110, 135, 0.18) 68%, transparent 80%),
+    radial-gradient(ellipse 14vw 20vh at -2% 4%, rgba(255, 255, 250, 0.55), transparent 60%),
+    radial-gradient(ellipse 8vw 14vh at 5% 24%, rgba(190, 255, 240, 0.4), transparent 65%),
+    radial-gradient(ellipse 26vw 55vh at -8% 44%, rgba(8, 160, 165, 0.32), rgba(20, 130, 150, 0.14) 52%, transparent 72%),
+    linear-gradient(115deg, rgba(8, 190, 175, 0.22), rgba(30, 100, 130, 0.08) 14%, transparent 26%);
+}
+.leaks-a::after {
+  background:
+    radial-gradient(ellipse 40vw 48vh at 101% 102%, rgba(255, 250, 225, 1) 5%, rgba(255, 200, 90, 0.9) 22%, rgba(255, 130, 10, 0.65) 44%, rgba(190, 60, 0, 0.5) 60%, rgba(125, 15, 0, 0.35) 72%, transparent 84%),
+    radial-gradient(ellipse 46vw 90vh at 107% 55%, rgba(130, 15, 0, 0.75), rgba(94, 4, 4, 0.4) 55%, transparent 72%),
+    radial-gradient(ellipse 50vw 38vh at 82% 114%, rgba(140, 20, 0, 0.55), transparent 70%),
+    radial-gradient(ellipse 22vw 24vh at 98% 100%, rgba(255, 240, 200, 0.5), transparent 58%),
+    radial-gradient(ellipse 7vw 10vh at 90% 78%, rgba(255, 150, 60, 0.3), transparent 65%),
+    radial-gradient(ellipse 12vw 30vh at 103% 30%, rgba(120, 12, 0, 0.4), transparent 68%),
+    linear-gradient(295deg, rgba(110, 10, 0, 0.35), rgba(255, 111, 0, 0.08) 12%, transparent 24%);
+  animation-duration: 32s;
+  animation-delay: -8s;
+}
+
+/* Variant B — gallery: warm burn left edge, teal glow low right */
+.leaks-b::before {
+  background:
+    radial-gradient(ellipse 24vw 55vh at -6% 30%, rgba(255, 225, 150, 0.9), rgba(255, 160, 45, 0.6) 26%, rgba(255, 111, 0, 0.45) 48%, rgba(140, 20, 0, 0.35) 66%, transparent 80%),
+    radial-gradient(ellipse 28vw 65vh at -9% 68%, rgba(125, 15, 0, 0.7), rgba(94, 4, 4, 0.35) 55%, transparent 72%),
+    radial-gradient(ellipse 10vw 18vh at -2% 34%, rgba(255, 250, 230, 0.5), transparent 60%),
+    radial-gradient(ellipse 6vw 10vh at 6% 52%, rgba(255, 170, 80, 0.3), transparent 65%),
+    linear-gradient(90deg, rgba(115, 12, 0, 0.35), rgba(255, 111, 0, 0.08) 10%, transparent 20%);
+}
+.leaks-b::after {
+  background:
+    radial-gradient(ellipse 48vw 42vh at 80% 108%, rgba(140, 240, 220, 0.65), rgba(8, 190, 175, 0.45) 32%, rgba(8, 150, 160, 0.25) 52%, transparent 74%),
+    radial-gradient(ellipse 32vw 38vh at 42% 112%, rgba(130, 195, 90, 0.3), transparent 66%),
+    radial-gradient(ellipse 26vw 26vh at 104% 12%, rgba(239, 229, 208, 0.18), transparent 65%);
+  animation-duration: 30s;
+  animation-delay: -12s;
+}
+
+/* Variant C — about / project pages: subtle teal right, ember bottom-left */
+.leaks-c::before {
+  background:
+    radial-gradient(ellipse 38vw 46vh at 104% 2%, rgba(230, 255, 248, 0.8), rgba(140, 235, 220, 0.5) 26%, rgba(8, 190, 175, 0.35) 48%, transparent 72%),
+    radial-gradient(ellipse 22vw 40vh at 106% 42%, rgba(239, 229, 208, 0.15), transparent 65%);
+}
+.leaks-c::after {
+  background:
+    radial-gradient(ellipse 38vw 40vh at -4% 104%, rgba(255, 220, 140, 0.85), rgba(255, 150, 40, 0.55) 30%, rgba(255, 111, 0, 0.4) 50%, rgba(135, 18, 0, 0.35) 66%, transparent 80%),
+    radial-gradient(ellipse 32vw 65vh at -8% 74%, rgba(125, 15, 0, 0.65), transparent 68%),
+    radial-gradient(ellipse 7vw 12vh at 8% 88%, rgba(255, 210, 130, 0.35), transparent 65%),
+    linear-gradient(70deg, rgba(115, 12, 0, 0.3), transparent 18%);
+  animation-duration: 34s;
+  animation-delay: -6s;
+}
+
+@keyframes leak-drift {
+  from { transform: scale(1) rotate(0.001deg); opacity: 0.85; }
+  50%  { opacity: 0.95; }
+  to   { transform: scale(1.09) rotate(0.001deg); opacity: 1; }
+}
+
+/* ------------------------------------------------------------
+   Film grain — soft, tactile, a light touch.
+   ------------------------------------------------------------ */
+.grain {
+  position: fixed;
+  inset: -100px;
+  z-index: 9999;
+  pointer-events: none;
+  /* Layer 1: fine film grain (gamma-crushed so it speckles without
+     lifting the midtones and washing out the dark blue).
+     Layer 2: sparse bright dust specks.
+     Layer 3: occasional curvy hairline scratches, hand-drawn paths. */
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncR type='gamma' amplitude='1' exponent='4' offset='0'/%3E%3CfeFuncG type='gamma' amplitude='1' exponent='4' offset='0'/%3E%3CfeFuncB type='gamma' amplitude='1' exponent='4' offset='0'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.9'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='520' height='520'%3E%3Cg fill='%23fff8ea'%3E%3Ccircle cx='47' cy='83' r='1.1' opacity='1'/%3E%3Ccircle cx='189' cy='34' r='0.7' opacity='0.9'/%3E%3Ccircle cx='305' cy='128' r='1.4' opacity='1'/%3E%3Ccircle cx='438' cy='72' r='0.8' opacity='0.8'/%3E%3Ccircle cx='96' cy='214' r='0.6' opacity='1'/%3E%3Ccircle cx='262' cy='257' r='1' opacity='0.85'/%3E%3Ccircle cx='401' cy='196' r='0.7' opacity='1'/%3E%3Ccircle cx='489' cy='302' r='1.2' opacity='0.95'/%3E%3Ccircle cx='58' cy='356' r='0.9' opacity='1'/%3E%3Ccircle cx='173' cy='411' r='0.6' opacity='0.8'/%3E%3Ccircle cx='331' cy='378' r='1.3' opacity='1'/%3E%3Ccircle cx='247' cy='486' r='0.8' opacity='1'/%3E%3Ccircle cx='419' cy='452' r='0.6' opacity='0.9'/%3E%3Ccircle cx='140' cy='307' r='0.5' opacity='0.75'/%3E%3Ccircle cx='368' cy='58' r='0.5' opacity='0.8'/%3E%3Ccircle cx='21' cy='470' r='0.7' opacity='0.95'/%3E%3Crect x='210' y='150' width='2.4' height='1' opacity='0.9'/%3E%3Crect x='452' y='390' width='1' height='2.6' opacity='1'/%3E%3C/g%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='1200'%3E%3Cg stroke='%23ffffff' fill='none' stroke-linecap='round'%3E%3Cpath d='M950 90 q28 45 -8 96 t14 120' stroke-width='2' stroke-opacity='0.55'/%3E%3Cpath d='M180 1050 q60 -18 90 -60 t80 -70' stroke-width='1.6' stroke-opacity='0.4'/%3E%3Cpath d='M640 480 q8 30 -6 52' stroke-width='1.4' stroke-opacity='0.35'/%3E%3Cpath d='M310 190 q90 130 200 320' stroke-width='1' stroke-opacity='0.2'/%3E%3Cpath d='M1060 690 q-40 90 -20 190' stroke-width='1.2' stroke-opacity='0.25'/%3E%3Cpath d='M80 420 q14 -34 40 -50' stroke-width='1.3' stroke-opacity='0.3'/%3E%3C/g%3E%3C/svg%3E");
+  background-size: 300px 300px, 520px 520px, 1200px 1200px;
+  opacity: 0.45; /* texture intensity — tune this single value to taste */
+  mix-blend-mode: screen;
+  /* Only the fine grain jitters; dust specks and scratches stay put */
+  animation: grain-shift 0.9s steps(1) infinite;
+}
+
+@keyframes grain-shift {
+  0%   { background-position: 0 0, 0 0, 0 0; }
+  25%  { background-position: -32px 18px, 0 0, 0 0; }
+  50%  { background-position: 20px -28px, 0 0, 0 0; }
+  75%  { background-position: -14px -10px, 0 0, 0 0; }
+  100% { background-position: 0 0, 0 0, 0 0; }
+}
+
+/* Dark noise pass — multiplies over everything, dark speckle only
+   (never brightens). Background image is generated per page by JS. */
+.grain-dark {
+  position: fixed;
+  inset: -100px;
+  z-index: 9998;
+  pointer-events: none;
+  mix-blend-mode: multiply;
+  opacity: 0.5;
+  background-size: 280px 280px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .grain, .light-leaks::before, .light-leaks::after, .scroll-cue .tri-down { animation: none !important; }
+}
+
+/* ------------------------------------------------------------
+   Typography
+   ------------------------------------------------------------ */
+h1, h2, h3 { font-weight: 500; line-height: 1.18; }
+
+em, .name { font-style: italic; }
+
+a {
+  color: var(--beige);
+  text-decoration: underline;
+  text-underline-offset: 0.22em;
+  text-decoration-thickness: 1px;
+  transition: color 0.25s ease;
+}
+a:hover { color: var(--turquoise); }
+
+/* Stepped headline — each line indents further, reading down + right.
+   Connective words sit light; the name and accent words carry weight.
+   Lines sit tight, almost touching. The block centres as a whole
+   while keeping its internal offset. */
+.stepped {
+  font-size: clamp(1.9rem, 8vw, 7.5rem);
+  font-weight: 300;
+  line-height: 1.02;
+  width: 100%;
+}
+.stepped .name, .stepped .accent-turquoise, .stepped .accent-orange { font-weight: 500; }
+.stepped span { display: block; }
+.stepped span:nth-child(2) { padding-left: 14%; }
+.stepped span:nth-child(3) { padding-left: 31%; }
+.stepped span:nth-child(4) { padding-left: 0; text-align: right; }
+
+/* Homepage hero breaks out of the content column to use the full screen */
+.hero.wrap { max-width: none; }
+
+/* About page greeting: both words bold italic, second line stepped */
+.greeting span { font-style: italic; font-weight: 500; }
+
+.accent-turquoise { color: var(--turquoise); font-style: italic; }
+.accent-orange { color: var(--orange); font-style: italic; }
+
+/* ------------------------------------------------------------
+   Header / nav
+   ------------------------------------------------------------ */
+.site-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1.5rem;
+  padding: clamp(1rem, 2.2vw, 1.5rem) var(--pad-x);
+  position: sticky;
+  top: 0;
+  z-index: 10001; /* above media frames, so nav stays reachable */
+}
+/* Header floats on the page background — no bar, no dividing line */
+
+/* Homepage: name logo hidden until the user scrolls */
+.name-logo.home-reveal {
+  opacity: 0;
+  transform: translateY(-8px);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  pointer-events: none;
+}
+.scrolled .name-logo.home-reveal {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+
+/* Name logo: two lines, offset, italic, triangle before "Chavda" */
+.name-logo {
+  font-style: italic;
+  font-weight: 500;
+  font-size: clamp(1.3rem, 2.2vw, 1.7rem);
+  line-height: 1.05;
+  text-decoration: none;
+}
+.name-logo:hover { color: var(--beige); }
+.name-logo .line2 {
+  display: flex;
+  align-items: center;
+  gap: 0.28em;
+  padding-left: 0.15em;
+}
+.name-logo .tri {
+  width: 0.5em;
+  height: 0.5em;
+  flex: none;
+  transition: transform 0.25s ease;
+}
+.name-logo:hover .tri { transform: translateX(0.15em); }
+
+.site-nav {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  font-size: clamp(0.95rem, 1.6vw, 1.15rem);
+  margin-left: auto;
+}
+.site-nav .nav-text { white-space: nowrap; }
+.site-nav .and { color: var(--beige-dim); }
+
+/* Triangle logo mark — always three, fixed colour order, home button */
+.logo-mark {
+  display: inline-flex;
+  align-items: center;
+  line-height: 0;
+  text-decoration: none;
+}
+.logo-mark svg { width: clamp(3.2rem, 5vw, 4.2rem); height: auto; display: block; }
+.logo-mark svg path { transition: transform 0.3s ease; transform-origin: center; transform-box: fill-box; }
+.logo-mark:hover svg path:nth-child(1) { transform: translateY(-6%); }
+.logo-mark:hover svg path:nth-child(2) { transform: translateY(6%); }
+.logo-mark:hover svg path:nth-child(3) { transform: translateY(-6%); }
+
+/* ------------------------------------------------------------
+   Layout
+   ------------------------------------------------------------ */
+.wrap { max-width: var(--max-width); margin: 0 auto; padding: 0 var(--pad-x); }
+
+/* Page content (thumbnails, text, everything in main) sits above the
+   film grain/scratch overlays, so the texture reads as part of the
+   background and light leaks rather than a layer over the content */
+main { position: relative; z-index: 10000; }
+
+.hero {
+  min-height: calc(100svh - 110px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-bottom: 4rem;
+}
+
+.scroll-cue {
+  margin-top: clamp(2.5rem, 7vh, 5rem);
+  text-align: center;
+  font-size: clamp(1.05rem, 1.8vw, 1.4rem);
+}
+.scroll-cue a { text-decoration: none; display: inline-block; }
+.scroll-cue .tri-down {
+  width: 1.05em;
+  height: 1.05em;
+  margin: 0.55em auto 0;
+  display: block;
+  animation: bob 2.4s ease-in-out infinite;
+}
+@keyframes bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(0.4em); }
+}
+
+section { position: relative; z-index: 1; }
+
+.section-title {
+  font-size: clamp(1.5rem, 2.6vw, 2.1rem);
+  font-style: italic;
+  margin-bottom: 2rem;
+}
+
+/* ------------------------------------------------------------
+   Gallery tabs — horizontally scrollable
+   ------------------------------------------------------------ */
+.tabs {
+  display: flex;
+  gap: clamp(1rem, 2vw, 1.75rem);
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  padding: 0.5rem var(--pad-x) 1rem;
+  margin-bottom: clamp(1.25rem, 2.5vw, 2rem);
+  font-size: clamp(1rem, 1.7vw, 1.3rem);
+  white-space: nowrap;
+  mask-image: linear-gradient(to right, transparent, black 2%, black 96%, transparent);
+}
+.tabs::-webkit-scrollbar { display: none; }
+
+.tab {
+  background: none;
+  border: none;
+  font: inherit;
+  color: var(--beige-faint);
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.25s ease;
+  flex: none;
+}
+.tab:hover { color: var(--beige-dim); }
+.tab.active { color: var(--beige); }
+
+/* ------------------------------------------------------------
+   Project cards
+   ------------------------------------------------------------ */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(320px, 100%), 1fr));
+  gap: clamp(1.75rem, 3.5vw, 3rem);
+  padding-bottom: 5rem;
+}
+
+.card { text-decoration: none; display: block; }
+.card:hover { color: var(--beige); }
+
+.card-img {
+  aspect-ratio: 4 / 3;
+  border-radius: 6px;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse 70% 60% at 0% 100%, rgba(8, 190, 175, 0.22), transparent 65%),
+    radial-gradient(ellipse 70% 60% at 100% 0%, rgba(255, 111, 0, 0.2), transparent 65%),
+    rgba(239, 229, 208, 0.06);
+  display: grid;
+  place-items: center;
+  transition: transform 0.35s ease;
+}
+.card:hover .card-img { transform: translateY(-4px); }
+.card-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.card-img .placeholder-mark { width: 22%; opacity: 0.5; }
+
+/* Centred link to the full gallery, below Recent work */
+.shebang {
+  text-align: center;
+  font-size: clamp(1.2rem, 2.2vw, 1.7rem);
+  padding-bottom: 5rem;
+}
+.shebang .tri-right {
+  width: 0.72em;
+  height: 0.72em;
+  display: inline-block;
+  vertical-align: baseline;
+  margin-left: 0.25em;
+  transition: transform 0.25s ease;
+}
+.shebang a:hover .tri-right { transform: translateX(0.2em); }
+
+.card h3 {
+  font-style: italic;
+  font-size: clamp(1.2rem, 2vw, 1.5rem);
+  margin: 1rem 0 0.35rem;
+}
+.card p { color: var(--beige-dim); font-size: 0.95rem; }
+.card .card-date { display: block; margin-top: 0.4rem; font-size: 0.85rem; color: var(--beige-faint); }
+
+/* Gallery grid: full-bleed, big visual tiles, title only —
+   the work does the talking */
+section:has([data-gallery-grid]),
+section:has([data-home-recent]) { max-width: none; }
+[data-gallery-grid],
+[data-home-recent] {
+  grid-template-columns: repeat(auto-fill, minmax(min(400px, 100%), 1fr));
+  gap: clamp(1.25rem, 2.2vw, 2rem) clamp(1rem, 1.6vw, 1.5rem);
+}
+[data-gallery-grid] .card h3,
+[data-home-recent] .card h3 { font-size: clamp(1.1rem, 1.6vw, 1.4rem); margin-top: 0.75rem; }
+[data-gallery-grid] .card p,
+[data-gallery-grid] .card .card-date,
+[data-home-recent] .card p,
+[data-home-recent] .card .card-date { display: none; }
+
+/* ------------------------------------------------------------
+   Project detail pages
+   ------------------------------------------------------------ */
+.project-head { padding: 0 0 2.5rem; } /* full width — matches the video above */
+.project-head h1 { font-size: clamp(2.2rem, 5vw, 3.6rem); font-style: italic; margin-bottom: 0.75rem; }
+.project-head .meta { color: var(--beige-dim); font-size: 1rem; margin-bottom: 1.5rem; }
+.project-head p:not(.meta) { margin-bottom: 1.1rem; }
+.project-head .meta .sep { color: var(--orange); margin: 0 0.5em; }
+
+.media-block { margin: 2.5rem 0; }
+main > .media-block:first-child { margin: 1.5rem 0 1rem; } /* hero video leads the page, title tucked close */
+.media-block figcaption { color: var(--beige-dim); font-size: 0.9rem; margin-top: 0.6rem; }
+.media-frame {
+  border-radius: 6px;
+  overflow: hidden;
+  background: rgba(239, 229, 208, 0.06);
+  /* Sits above the film grain/scratch overlays so videos and
+     stills play clean, unwashed by the texture */
+  position: relative;
+  z-index: 10000;
+}
+.media-frame img, .media-frame video { width: 100%; display: block; }
+.media-frame iframe { width: 100%; height: 100%; border: 0; display: block; }
+.media-frame.video { aspect-ratio: 16 / 9; display: grid; place-items: center; color: var(--beige-faint); }
+/* Vertical video (Shorts, Reels, TikTok format): portrait frame, centred */
+.media-frame.video.vertical {
+  aspect-ratio: 9 / 16;
+  max-width: min(400px, 85vw);
+  margin-inline: auto;
+}
+
+.media-frame.video.square {
+  aspect-ratio: 1 / 1;
+  max-width: min(480px, 85vw);
+  margin-inline: auto;
+}
+
+/* Two (or more) vertical videos sitting side by side, centred;
+   they wrap into a stack on narrow screens */
+.video-pair {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: clamp(1.5rem, 3vw, 2.5rem);
+  margin: 2.5rem 0;
+}
+.video-pair .media-frame.video.vertical {
+  flex: 1 1 0;
+  max-width: 340px;
+  min-width: 160px;
+  margin-inline: 0;
+}
+.video-pair .media-frame.video.square {
+  flex: 1 1 0;
+  max-width: 440px;
+  min-width: 200px;
+  margin-inline: 0;
+}
+
+/* Vertical video + copy side by side on wide screens;
+   stacks back to video-then-text on narrow ones */
+@media (min-width: 900px) {
+  .project-split {
+    display: flex;
+    gap: clamp(2.5rem, 5vw, 5rem);
+    align-items: flex-start;
+  }
+  .project-split .media-block { flex: 0 0 auto; }
+  .project-split .media-frame.video.vertical { width: min(400px, 32vw); margin-inline: 0; }
+  .project-split .project-head { flex: 1 1 0; padding-top: 1.5rem; }
+}
+
+/* A single row of stills sitting side by side; images shrink
+   together to stay on one line, wrapping only on narrow screens */
+.still-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: clamp(1rem, 2vw, 1.75rem);
+  margin: 2.5rem 0;
+}
+.still-row .media-frame.still {
+  flex: 1 1 0;
+  min-width: 150px;
+  aspect-ratio: 4 / 5;
+  min-height: 0;
+}
+.still-row .media-frame.still img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.stills-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(280px, 100%), 1fr));
+  gap: 1.5rem;
+}
+.stills-grid .media-frame { aspect-ratio: 3 / 2; display: grid; place-items: center; color: var(--beige-faint); }
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  margin: 3rem 0 5rem;
+}
+.back-link .tri-back {
+  width: 0.75em;
+  height: 0.75em;
+  flex: none;
+  transition: transform 0.25s ease;
+}
+.back-link:hover .tri-back { transform: translateX(-0.2em); }
+
+/* ------------------------------------------------------------
+   About page
+   ------------------------------------------------------------ */
+.about-layout {
+  display: flex;
+  gap: clamp(2rem, 5vw, 5rem);
+  align-items: flex-start;
+  flex-wrap: wrap;
+  padding-bottom: 5rem;
+}
+.about-text { flex: 1 1 32rem; min-width: min(100%, 20rem); }
+.about-body { max-width: 72ch; }
+.about-body p { margin-bottom: 1.4rem; }
+
+/* Poem-style bio: each line steps down and right, like the hero */
+.about-poem p { margin-bottom: 1.8rem; }
+.about-poem span { display: block; }
+.about-poem span:nth-child(2) { padding-left: 5%; }
+.about-poem span:nth-child(3) { padding-left: 10%; }
+.about-poem span:nth-child(4) { padding-left: 15%; }
+
+.contact-icons { display: flex; gap: 1.4rem; margin-top: 0.75rem; }
+.contact-icons a { line-height: 0; }
+.contact-icons svg {
+  width: 1.9rem;
+  height: 1.9rem;
+  fill: var(--beige);
+  transition: fill 0.25s ease, transform 0.25s ease;
+}
+.contact-icons a:hover svg { fill: var(--turquoise); transform: translateY(-2px); }
+
+.about-photo {
+  flex: 0 1 280px; /* top-aligned with the text block */
+}
+.about-photo img {
+  width: 100%;
+  display: block;
+  border-radius: 6px;
+}
+.about-photo figcaption {
+  font-style: italic;
+  color: var(--beige-dim);
+  font-size: 0.85rem;
+  margin-top: 0.6rem;
+}
+
+/* ------------------------------------------------------------
+   Footer
+   ------------------------------------------------------------ */
+.site-footer {
+  padding: 2.5rem var(--pad-x) 3rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1.5rem;
+  color: var(--beige-dim);
+  font-size: 0.9rem;
+  flex-wrap: wrap;
+}
+
+/* ------------------------------------------------------------
+   Responsive
+   ------------------------------------------------------------ */
+@media (max-width: 640px) {
+  .site-nav { flex-wrap: wrap; justify-content: flex-end; }
+  .hero { min-height: calc(100svh - 90px); }
+}
