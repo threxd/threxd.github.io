@@ -302,6 +302,11 @@ a:hover { color: var(--turquoise); }
    ------------------------------------------------------------ */
 .wrap { max-width: var(--max-width); margin: 0 auto; padding: 0 var(--pad-x); }
 
+/* Page content (thumbnails, text, everything in main) sits above the
+   film grain/scratch overlays, so the texture reads as part of the
+   background and light leaks rather than a layer over the content */
+main { position: relative; z-index: 10000; }
+
 .hero {
   min-height: calc(100svh - 110px);
   display: flex;
@@ -441,6 +446,7 @@ section:has([data-home-recent]) { max-width: none; }
 .project-head { padding: 0 0 2.5rem; } /* full width — matches the video above */
 .project-head h1 { font-size: clamp(2.2rem, 5vw, 3.6rem); font-style: italic; margin-bottom: 0.75rem; }
 .project-head .meta { color: var(--beige-dim); font-size: 1rem; margin-bottom: 1.5rem; }
+.project-head p:not(.meta) { margin-bottom: 1.1rem; }
 .project-head .meta .sep { color: var(--orange); margin: 0 0.5em; }
 
 .media-block { margin: 2.5rem 0; }
@@ -458,6 +464,75 @@ main > .media-block:first-child { margin: 1.5rem 0 1rem; } /* hero video leads t
 .media-frame img, .media-frame video { width: 100%; display: block; }
 .media-frame iframe { width: 100%; height: 100%; border: 0; display: block; }
 .media-frame.video { aspect-ratio: 16 / 9; display: grid; place-items: center; color: var(--beige-faint); }
+/* Vertical video (Shorts, Reels, TikTok format): portrait frame, centred */
+.media-frame.video.vertical {
+  aspect-ratio: 9 / 16;
+  max-width: min(400px, 85vw);
+  margin-inline: auto;
+}
+
+.media-frame.video.square {
+  aspect-ratio: 1 / 1;
+  max-width: min(480px, 85vw);
+  margin-inline: auto;
+}
+
+/* Two (or more) vertical videos sitting side by side, centred;
+   they wrap into a stack on narrow screens */
+.video-pair {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: clamp(1.5rem, 3vw, 2.5rem);
+  margin: 2.5rem 0;
+}
+.video-pair .media-frame.video.vertical {
+  flex: 1 1 0;
+  max-width: 340px;
+  min-width: 160px;
+  margin-inline: 0;
+}
+.video-pair .media-frame.video.square {
+  flex: 1 1 0;
+  max-width: 440px;
+  min-width: 200px;
+  margin-inline: 0;
+}
+
+/* Vertical video + copy side by side on wide screens;
+   stacks back to video-then-text on narrow ones */
+@media (min-width: 900px) {
+  .project-split {
+    display: flex;
+    gap: clamp(2.5rem, 5vw, 5rem);
+    align-items: flex-start;
+  }
+  .project-split .media-block { flex: 0 0 auto; }
+  .project-split .media-frame.video.vertical { width: min(400px, 32vw); margin-inline: 0; }
+  .project-split .project-head { flex: 1 1 0; padding-top: 1.5rem; }
+}
+
+/* A single row of stills sitting side by side; images shrink
+   together to stay on one line, wrapping only on narrow screens */
+.still-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: clamp(1rem, 2vw, 1.75rem);
+  margin: 2.5rem 0;
+}
+.still-row .media-frame.still {
+  flex: 1 1 0;
+  min-width: 150px;
+  aspect-ratio: 4 / 5;
+  min-height: 0;
+}
+.still-row .media-frame.still img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
 
 .stills-grid {
   display: grid;
